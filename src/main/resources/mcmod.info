@@ -1,0 +1,16 @@
+[
+{
+  "modid": "invcalc",
+  "name": "InventoryCalculator",
+  "description": "Provides an ingame calculator to craft or use (config setting)",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "limplungs.weebly.com",
+  "updateUrl": "",
+  "authorList": ["LimpLungs"],
+  "credits": "LimpLungs was the sole creator of this mod...",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

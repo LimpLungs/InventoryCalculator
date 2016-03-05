@@ -1,0 +1,5 @@
+itemGroup.tabInvCalc=InventoryCalculator
+
+item.invcalc_calculatorBasic.name=iC-Basic
+
+item.invcalc_battery10000.name=Battery (10k)
