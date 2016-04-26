@@ -21,7 +21,7 @@ public class Construct
 	{
 		calculatorBasic = new ItemCalculatorBasic(new String("calculatorBasic"), InventoryCalculator.tabInvCalc);
 		
-		battery10000 = new ItemBattery(new String("battery10000"), InventoryCalculator.tabInvCalc);
+		battery10000 = new ItemBattery(new String("battery10000"), InventoryCalculator.tabInvCalc, 10000);
 	}
 
 	public static void registerModels(RenderItem renderItem) 
@@ -33,6 +33,7 @@ public class Construct
 	public static void craftCalculators()
 	{
 		//GameRegistry.addRecipe(NoMirrorRecipe.addNoMirrorRecipe(new ItemStack(Construct.calculatorBasic), new Object[] {"IGI", "IBI", "CRT" , 'I', Items.iron_ingot, 'G', Blocks.glass, 'B', Blocks.stone_button, 'C', Items.comparator, 'R', Items.redstone, 'T', Items.repeater}));
-		GameRegistry.addRecipe(new ItemStack(Construct.calculatorBasic), new Object[] {"IGI", "IBI", "CRT" , 'I', Items.iron_ingot, 'G', Blocks.glass, 'B', Blocks.stone_button, 'C', Items.comparator, 'R', Items.redstone, 'T', Items.repeater});
+		GameRegistry.addRecipe(new ItemStack(Construct.calculatorBasic), new Object[] {"IGI", "IBI", "RRR" , 'I', Items.iron_ingot, 'G', Blocks.glass, 'B', Blocks.stone_button, 'R', Items.redstone});
+		GameRegistry.addRecipe(new ItemStack(Construct.battery10000), new Object[] {"WWW", "GRG", "WWW" , 'W', Blocks.heavy_weighted_pressure_plate, 'G', Items.gold_nugget, 'R', Items.redstone});
 	}
 }

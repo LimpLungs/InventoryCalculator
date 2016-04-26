@@ -41,6 +41,25 @@ public class InventoryCalculatorBasic implements IInventory
 	}
 
 	@Override
+	public String getName()
+	{
+		return "iC-Basic";
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return true;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public int getSizeInventory()
 	{
 		return itemslots.length;
@@ -98,18 +117,6 @@ public class InventoryCalculatorBasic implements IInventory
 	}
 
 	@Override
-	public String getName()
-	{
-		return "iC-Basic";
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return true;
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -139,6 +146,48 @@ public class InventoryCalculatorBasic implements IInventory
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
 		return true;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer player)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 	public void writeToNBT(NBTTagCompound compound)
@@ -193,24 +242,7 @@ public class InventoryCalculatorBasic implements IInventory
 		this.hasClock = compound.getBoolean("hasClock");
 	}
 
-	
-	
-	@Override
-	public void openInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	
+	// Runs a standard usage cycle.
 	public void batteryDecUsage()
 	{
 		this.battery -= 2;
@@ -223,22 +255,29 @@ public class InventoryCalculatorBasic implements IInventory
 		this.markDirty();
 	}
 
+	// Increases Calculator battery using up some of the actual battery.
 	public void batteryIncBattery()
 	{
-		if (this.hasBattery && !this.hasSolar)
+		if (this.hasBattery && this.getStackInSlot(1).getTagCompound().getInteger("battery") >= 5 && !this.hasSolar)
 		{
-			this.battery += 5;
-			this.getStackInSlot(1).damageItem(5, Minecraft.getMinecraft().thePlayer);
+			int used = 0;
 
-			if (this.battery > this.batMax)
+			if (this.batMax - this.battery >= 5)
 			{
-				this.battery = this.batMax;
+				used = 5;
 			}
+			else
+				used = this.batMax - this.battery;
+
+			this.battery += used;
+			this.getStackInSlot(1).getTagCompound().setInteger("battery", this.getStackInSlot(1).getTagCompound().getInteger("battery") - used);
 
 			this.markDirty();
 		}
 	}
 
+	// Increases Calculator battery using solar power, and stores extra in
+	// battery.
 	public void batteryIncSolar()
 	{
 		if (this.hasSolar)
@@ -251,9 +290,17 @@ public class InventoryCalculatorBasic implements IInventory
 			{
 				this.battery = this.batMax;
 
-				if (this.hasBattery) // TODO: check if battery is not full
+				// Increases extra battery if calculator battery full
+				if (this.hasBattery)
 				{
-					// TODO: Add to battery level.
+					if (this.getStackInSlot(1).getTagCompound().getInteger("battery") < this.getStackInSlot(1).getTagCompound().getInteger("batMax"))
+					{
+						this.getStackInSlot(1).getTagCompound().setInteger("battery", this.getStackInSlot(1).getTagCompound().getInteger("battery") + getLevelSolar());
+					}
+					else
+					{
+						this.getStackInSlot(1).getTagCompound().setInteger("battery", this.getStackInSlot(1).getTagCompound().getInteger("batMax"));
+					}
 				}
 			}
 
@@ -261,6 +308,7 @@ public class InventoryCalculatorBasic implements IInventory
 		}
 	}
 
+	// Gets the current solar power for calculator
 	public int getLevelSolar()
 	{
 		int solar = 5;
@@ -271,6 +319,7 @@ public class InventoryCalculatorBasic implements IInventory
 		return solar;
 	}
 
+	// Decreases battery level if clock is active.
 	public void batteryDecClock()
 	{
 		if (this.hasClock)
@@ -281,6 +330,7 @@ public class InventoryCalculatorBasic implements IInventory
 		this.markDirty();
 	}
 
+	// Updates the fuel stack for the battery, both internal and extra.
 	public void updateFuelStack()
 	{
 		if (!this.hasBattery && !this.hasSolar && this.getStackInSlot(0) != null && this.getStackInSlot(0) != new ItemStack(Blocks.air))
@@ -297,9 +347,18 @@ public class InventoryCalculatorBasic implements IInventory
 			}
 		}
 
-		if (this.hasBattery && this.getStackInSlot(0) != null && this.getStackInSlot(0) != new ItemStack(Blocks.air))
+		else if (this.hasBattery && this.getStackInSlot(0) != null && this.getStackInSlot(0) != new ItemStack(Blocks.air))
 		{
-			// TODO: ADD TO BATTERY LEVEL.
+			if (this.getStackInSlot(1).getTagCompound().getInteger("battery") <= 1000 && this.getStackInSlot(0).getItem() == Item.getItemFromBlock(Blocks.redstone_block))
+			{
+				this.decrStackSize(0, 1);
+				this.getStackInSlot(1).getTagCompound().setInteger("battery", this.getStackInSlot(1).getTagCompound().getInteger("battery") + 9000);
+			}
+			else if (this.getStackInSlot(1).getTagCompound().getInteger("battery") <= 9000 && this.getStackInSlot(0).getItem() == Items.redstone)
+			{
+				this.decrStackSize(0, 1);
+				this.getStackInSlot(1).getTagCompound().setInteger("battery", this.getStackInSlot(1).getTagCompound().getInteger("battery") + 1000);
+			}
 		}
 
 		this.markDirty();
@@ -320,7 +379,8 @@ public class InventoryCalculatorBasic implements IInventory
 		// hasBattery
 		if (this.getStackInSlot(1) != null && this.getStackInSlot(1) != new ItemStack(Blocks.air))
 		{
-			this.hasBattery = true;
+			if (this.getStackInSlot(1).hasTagCompound())
+				this.hasBattery = true;
 		}
 		else
 		{
@@ -348,36 +408,5 @@ public class InventoryCalculatorBasic implements IInventory
 		}
 
 		this.markDirty();
-	}
-	
-
-	@Override
-	public IChatComponent getDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getField(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getFieldCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
 	}
 }

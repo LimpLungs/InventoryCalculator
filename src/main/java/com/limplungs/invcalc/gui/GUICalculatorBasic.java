@@ -15,6 +15,7 @@ public class GUICalculatorBasic extends GuiContainer
 	private final InventoryCalculatorBasic calculator;
 	
 	private double batPerc = 0.1;
+	private int sun = 0;
 	
 	
 	public GUICalculatorBasic(ContainerCalculatorBasic calculator)
@@ -46,6 +47,7 @@ public class GUICalculatorBasic extends GuiContainer
 		drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 194, 108);
 		
 		this.batPerc = ((double) this.calculator.battery) / ((double) this.calculator.batMax) * 100.0;
+		this.sun = this.calculator.getLevelSolar();
 		
 		if      (this.batPerc > 90)
 			drawTexturedModalRect(this.guiLeft + 166, this.guiTop + 77, 195, 0, 21, 10);
@@ -67,6 +69,17 @@ public class GUICalculatorBasic extends GuiContainer
 			drawTexturedModalRect(this.guiLeft + 166, this.guiTop + 77, 195, 0,  5, 10);
 		else if (this.batPerc >  0)
 			drawTexturedModalRect(this.guiLeft + 166, this.guiTop + 77, 195, 0,  3, 10);
+		
+		if (this.sun > 4)
+			drawTexturedModalRect(this.guiLeft + 114, this.guiTop + 12, 195, 12,  41, 46);
+		else if (this.sun > 3)
+			drawTexturedModalRect(this.guiLeft + 114, this.guiTop + 17, 195, 17,  41, 41);
+		else if (this.sun > 2)
+			drawTexturedModalRect(this.guiLeft + 114, this.guiTop + 27, 195, 27,  41, 31);
+		else if (this.sun > 1)
+			drawTexturedModalRect(this.guiLeft + 114, this.guiTop + 37, 195, 37,  41, 21);
+		else if (this.sun > 0)
+			drawTexturedModalRect(this.guiLeft + 114, this.guiTop + 47, 195, 47,  41, 11);
     }
 
 	
@@ -185,10 +198,10 @@ public class GUICalculatorBasic extends GuiContainer
 		{
 			java.util.Calendar cal = Minecraft.getMinecraft().theWorld.getCurrentDate();
 			
-			this.fontRendererObj.drawString(I18n.format(Reference.getDigitalTime(), new Object[0]), this.guiLeft + 116, this.guiTop + 3, 4210752);
+			this.fontRendererObj.drawString(I18n.format(Reference.getDigitalTime(), new Object[0]), this.guiLeft + 116, this.guiTop + 2, 4210752);
 			this.fontRendererObj.drawString(I18n.format(Integer.toString(cal.DAY_OF_MONTH) + "|" + 
 			                                            Integer.toString(cal.MONTH) + "|" + 
-					                                    Integer.toString(cal.YEAR), new Object[0]), this.guiLeft + 155, this.guiTop + 3, 4210752);
+					                                    Integer.toString(cal.YEAR), new Object[0]), this.guiLeft + 155, this.guiTop + 2, 4210752);
 		}
 		
 		this.calculator.updateBooleans();
