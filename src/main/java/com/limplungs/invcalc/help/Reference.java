@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 public class Reference
 {
 	public static final String MODID = "invcalc";
-	public static final String VERSION = "1.0.0dev6";
+	public static final String VERSION = "1.0.0dev7";
 	
 	
 	public static String getDigitalTime()
@@ -16,7 +16,7 @@ public class Reference
 		int minutes = 0;
 		int hours = 0;
 		
-		if (time < 6000 || time > 17999)
+		if (time < 6000 || time >= 18000)
 			meridiem = new String("am");
 		else
 			meridiem = new String("pm");

@@ -245,7 +245,7 @@ public class InventoryCalculatorBasic implements IInventory
 	// Runs a standard usage cycle.
 	public void batteryDecUsage()
 	{
-		this.battery -= 2;
+		this.battery -= 1;
 
 		if (this.battery < 0)
 		{
@@ -311,11 +311,34 @@ public class InventoryCalculatorBasic implements IInventory
 	// Gets the current solar power for calculator
 	public int getLevelSolar()
 	{
-		int solar = 5;
-
-		if (Minecraft.getMinecraft().theWorld.isRaining())
+		int solar = 0;
+		
+		long time = Minecraft.getMinecraft().theWorld.getWorldTime();
+		
+		if (time >= 23000 || time < 12500)
+			solar = 2;
+		
+		if (time >= 23500 || time < 12000)
 			solar = 3;
-
+		
+		if (time >= 24000)
+			time -= 24000;
+		
+		if (time >= 0 && time < 11500)
+			solar = 4;
+		
+		if (time >= 500 && time < 11000)
+			solar = 5;
+		
+		if (time >= 1000 && time < 10500)
+			solar = 6;
+		
+		if (Minecraft.getMinecraft().theWorld.isRaining())
+			solar -= 1;
+		
+		if (solar < 0)
+			solar = 0;
+		
 		return solar;
 	}
 
@@ -367,7 +390,7 @@ public class InventoryCalculatorBasic implements IInventory
 	public void updateBooleans()
 	{
 		// hasSolar
-		if (this.getStackInSlot(2) != null && this.getStackInSlot(2) != new ItemStack(Blocks.air) && Minecraft.getMinecraft().theWorld.getWorldTime() > 0 && Minecraft.getMinecraft().theWorld.getWorldTime() <= 12000)
+		if (this.getStackInSlot(2) != null && this.getStackInSlot(2) != new ItemStack(Blocks.air))
 		{
 			this.hasSolar = true;
 		}
